@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     		$fNameErr = "Letters only.";
     	}
     }
-
     if(empty($_POST['lName'])) {
     	$lNameErr = "Last name is required.";
     } else {
@@ -36,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         	$lNameErr = "Letters only.";
         }
     }
-
     if(empty($_POST['email'])) {
     	$emailErr = "Email required.";
     } else {
@@ -46,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     		$emailErr = "Invalid email address.";
     	}
     }
-
     if(empty($_POST['password'])) {
     	$passwordErr = 'Password required.';
     } else {
@@ -56,8 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     		$passwordErr = "Password must be between 8 and 32 characters.";
     	}
     }
-}
-	
+}	
 ?>
 
 
