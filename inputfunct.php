@@ -2,7 +2,7 @@
 //Work on better names. Comments added
 
 //Cleans input from malicious code.
-function cleanInput($data) //move to objects folder
+function removeMaliciousCode($data)
 {
     $data = implode("", explode("\\", $data));
 	$date = trim($data);
@@ -68,14 +68,6 @@ function hashUserPassword($userPassword) // move to a user folder
 	$hash = password_hash($userPassword, PASSWORD_DEFAULT);
 	return $hash;
 }
-//Check all input variables, if false report where.
-/*function arrayErrors($arrayErr) {
-	foreach ($arrayErr as $keyErr => $valueErr) {
-		if (empyt($valueErr)) {
-			return ${'$keyErr' . "Err"} = "$keyErr" . "is required.";
-		}	
-	}
-}*/
 //Check all input variables if true.
 function arrayAllTrue($array) 
 {

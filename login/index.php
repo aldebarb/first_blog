@@ -2,9 +2,7 @@
 <html>
 <head>
 	<title>Blog Login</title>
-	<?php
-		require 'inputfunct.php';
-	?>
+
 </head>
 <body>
 <h2>Weclome to the personal blog!</h2>
