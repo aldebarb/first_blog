@@ -13,55 +13,82 @@ require 'C:/xampp/htdocs/GitHubProjects/first_blog/User/index.php';
 </head>
 <body>
 <?php
-$fName = $lName = $bDate = $email = "";
+$fName = $lName = $bDate = $birthDate = $email = $password = "";
 $fNameErr = $lNameErr = $birthDateErr = $emailErr = $passwordErr = "";
-$birthDate = "mm/dd/yyyy";
-$arrayBool = false;
+$inputArray = array();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    
     if(empty($_POST['fName'])) {
         $fNameErr = "First name is required.";
+        $inputArray['fName'] = "";
     } else {
-    	$fName = removeMaliciousCode($_POST['fName']);
-    	//Check for letters and length
+        $fName = removeMaliciousCode($_POST['fName']);
+    	//Check for letters and limit length
     	$fName = checkStringLength($fName, 32);
+        $inputArray['fName'] = $fName;
+
     	if(empty($fName)) {
     		$fNameErr = "Letters only.";
     	}
     }
     if(empty($_POST['lName'])) {
     	$lNameErr = "Last name is required.";
+        $inputArray['lName'] = "";
     } else {
     	$lName = removeMaliciousCode($_POST['lName']);
     	$lName = checkStringLength($lName, 32);
+        $inputArray['lName'] = $lName;
+
         if(empty($lName)) {
         	$lNameErr = "Letters only.";
         }
     }
-    //fix this
+    //Need to add date limits
     if(empty($_POST['birthDate'])) {
         $birthDateErr = "Birth date required.";
+        $inputArray['bDate'] = "";
     } else {
         $birthDate = strtotime($_POST['birthDate']);
-        $bDate = date('m-d-Y', $birthDate);
+        $bDate = date('m/d/Y', $birthDate);
+        $inputArray['bDate'] = $bDate;
     }
     if(empty($_POST['email'])) {
     	$emailErr = "Email required.";
+        $inputArray['email'] = "";
+
     } else {
     	$email = removeMaliciousCode($_POST['email']);
     	$email = verifyEmail($email);
+        $inputArray['email'] = $email;
+
     	if(empty($email)) {
     		$emailErr = "Invalid email address.";
     	}
     }
     if(empty($_POST['password'])) {
     	$passwordErr = 'Password required.';
+        $inputArray['password'] = "";
     } else {
     	$password = removeMaliciousCode($_POST['password']);
-    	$password = hashUserPassword($_POST['password']);
+    	$passwordHash = hashUserPassword($password);
+        $inputArray['password'] = $password;
+        $inputArray['passwordhash'] = $passwordHash;
     	if(empty($password)) {
     		$passwordErr = "Password must be between 8 and 32 characters.";
     	}
+    }
+    if(isset($_POST['submit'])) {
+         if(in_array("", $inputArray) || empty($inputArray)) {
+            echo "Empty Spaces or is Empty!";
+         } else {
+            //Connect to DB
+            //Check if email exists
+            //Save to DB
+            //Redirect to login
+            header("location:index.php");
+
+         }   
     }
 }	
 ?>
@@ -73,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <span class="error">* <?php echo $fNameErr;?></span><br><br>
     Last Name: <input type="text" name="lName" value="<?php echo $lName;?>">
     <span class="error">* <?php echo $lNameErr;?></span><br><br>
-    Birth Date: <input type="date" name="birthDate" value="<?php echo $bDate ?>">
+    Birth Date: <input type="date" name="birthDate" value="<?php echo $bDate ?>"> mm/dd/yyyy
     <span class="error">* <?php echo $birthDateErr;?></span><br><br>
     Email: <input type="text" name="email" value="<?php echo $email;?>">
     <span class="error">* <?php echo $emailErr;?></span><br><br>
@@ -82,12 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
    
     <input type="submit" name="submit" value="Submit">
 </form>
-
-<?php
-    echo "<br>" . $fName . "<br>" . $lName . "<br>" . $bDate . "<br>" . $email . "<br>" . $password;
-
-?>
-
 
 </body>
 </html>

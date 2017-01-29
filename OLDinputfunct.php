@@ -73,10 +73,10 @@ function arrayAllTrue($array)
 {
 	foreach ($array as $key => $value) {
 		if (empty($value)) {
-			echo "fail ";
 			break;
 		}
 	}
+	return true;
 }
 function connectBlog() //move to a user folder
 {

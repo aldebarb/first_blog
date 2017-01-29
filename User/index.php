@@ -4,12 +4,11 @@ function hashUserPassword($userPassword)
 	if (strlen($userPassword) < 8 || strlen($userPassword) > 32) {
 		return $userPassword = "";
 	}
-
 	$hash = password_hash($userPassword, PASSWORD_DEFAULT);
 	return $hash;
 }
-function connectBlog() //move to a user folder
-{
+function connectBlog() 
+{   //need to create database.
 	//mysqli connection to database called blog_db
 	$mysqli = new mysqli('localhost', 'root', '', 'blog_db');
 

@@ -21,7 +21,7 @@ function checkStringLength($userString, $stringLength)
 	}
 	return $userString;
 }
-//fix this***
+/****Rivsit this****
 function validateUserInt($userInt, $intMin, $intMax)
 {
 	if (empty($userInt)) {
@@ -35,6 +35,7 @@ function validateUserInt($userInt, $intMin, $intMax)
 	}
 	return $userInt;
 }
+*/
 function verifyEmail($userEmail) 
 {
     if (empty($userEmail)) {
