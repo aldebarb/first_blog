@@ -4,8 +4,8 @@
 <head>
 	<title>Register</title>
 <?php 
-require  'C:/xampp/htdocs/GitHubProjects/first_blog/Objects/formUtility.php';
-require 'C:/xampp/htdocs/GitHubProjects/first_blog/User/index.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 ?>
 <style>
 	.error {color: #FF0000;}
@@ -79,16 +79,30 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     	}
     }
     if(isset($_POST['submit'])) {
-         if(in_array("", $inputArray) || empty($inputArray)) {
-            echo "Empty Spaces or is Empty!";
-         } else {
+        if(in_array("", $inputArray) || empty($inputArray)) {
+            echo "Please fill in the entire form!";
+        } else {
+            $mysql = connectBlog();
+            $bool = true;
+            $query = mysqli_query($mysql, "SELECT * FROM users");
+
+            while($row = mysqli_fetch_array($query)) {
+                $table_users = $row['username'];
+
+                if($username == $table_users) {
+                    $bool = false;
+                    print '<script>alert("Username has been taken.");</script>';
+                    print '<script>window.location.assign("register.php");</script>';
+                }
+            }
+            
             //Connect to DB
             //Check if email exists
             //Save to DB
             //Redirect to login
-            header("location:index.php");
+            header("location:check.php");
 
-         }   
+        }   
     }
 }	
 ?>
