@@ -16,6 +16,7 @@
 </form><br>
 
 <p>Don't have an account? <a href="register.php">Click here and join today!</a></p>
+<p>Check out the blog. <a href="/Home/index.php">Visit as a guest.</a>
 
 </body>
 </html>
