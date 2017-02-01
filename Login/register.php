@@ -82,25 +82,34 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         if(in_array("", $inputArray) || empty($inputArray)) {
             echo "Please fill in the entire form!";
         } else {
+            //Connect to blog_db
+            //Schema
+            //Users (ID, FirstName, LastName, Birthdate, Email, Password)
             $mysql = connectBlog();
             $bool = true;
-            $query = mysqli_query($mysql, "SELECT * FROM users");
+            $query = mysqli_query($mysql, "SELECT * FROM Users");
 
             while($row = mysqli_fetch_array($query)) {
-                $table_users = $row['username'];
+                $usersEmail = $row['email'];
 
-                if($username == $table_users) {
+                if($email == $usersEmail) {
                     $bool = false;
-                    print '<script>alert("Username has been taken.");</script>';
+                    print '<script>alert("Email has been taken.");</script>';
                     print '<script>window.location.assign("register.php");</script>';
                 }
+            }
+
+            if($bool) {
+                mysqli_query($mysql, "INSERT INTO Users (FirstName, LastName, Birthdate, Email, Password) VALUES ('$fName', '$lName', '$bDate', '$email', '$password')");
+                Print '<script>alert("Registration Complete!");</script>';
+                Print '<script>window.location.assign("register.php");</script>';
             }
             
             //Connect to DB
             //Check if email exists
             //Save to DB
             //Redirect to login
-            header("location:check.php");
+            header("location:login.php");
 
         }   
     }
