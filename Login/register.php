@@ -13,57 +13,58 @@ require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 </head>
 <body>
 <?php
-$fName = $lName = $bDate = $birthDate = $email = $password = "";
-$fNameErr = $lNameErr = $birthDateErr = $emailErr = $passwordErr = "";
+$firstName  = $lastName = $birthDate = $emailAddress = $password = $tempDate1 = $tempDate2 = "";
+$firstNameErr = $lastNameErr = $birthDateErr = $emailAddressErr = $passwordErr = "";
 $inputArray = array();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     
-    if(empty($_POST['fName'])) {
-        $fNameErr = "First name is required.";
-        $inputArray['fName'] = "";
+    if(empty($_POST['firstName'])) {
+        $firstNameErr = "First name is required.";
+        $inputArray['firstName'] = "";
     } else {
-        $fName = removeMaliciousCode($_POST['fName']);
+        $firstName  = removeMaliciousCode($_POST['firstName']);
     	//Check for letters and limit length
-    	$fName = checkStringLength($fName, 32);
-        $inputArray['fName'] = $fName;
+    	$firstName  = checkStringLength($firstName , 32);
+        $inputArray['firstName'] = $firstName ;
 
-    	if(empty($fName)) {
-    		$fNameErr = "Letters only.";
+    	if(empty($firstName )) {
+    		$firstNameErr = "Letters only.";
     	}
     }
-    if(empty($_POST['lName'])) {
-    	$lNameErr = "Last name is required.";
-        $inputArray['lName'] = "";
+    if(empty($_POST['lastName'])) {
+    	$lastNameErr = "Last name is required.";
+        $inputArray['lastName'] = "";
     } else {
-    	$lName = removeMaliciousCode($_POST['lName']);
-    	$lName = checkStringLength($lName, 32);
-        $inputArray['lName'] = $lName;
+    	$lastName = removeMaliciousCode($_POST['lastName']);
+    	$lastName = checkStringLength($lastName, 32);
+        $inputArray['lastName'] = $lastName;
 
-        if(empty($lName)) {
-        	$lNameErr = "Letters only.";
+        if(empty($lastName)) {
+        	$lastNameErr = "Letters only.";
         }
     }
     //Need to add date limits
     if(empty($_POST['birthDate'])) {
         $birthDateErr = "Birth date required.";
-        $inputArray['bDate'] = "";
+        $inputArray['birthDate'] = "";
     } else {
-        $birthDate = strtotime($_POST['birthDate']);
-        $bDate = date('m/d/Y', $birthDate);
-        $inputArray['bDate'] = $bDate;
+        $tempDate1 = removeMaliciousCode($_POST['birthDate']);
+        $tempDate2 = strtotime($tempDate1);
+        $birthDate = date('Y/m/d', $tempDate2);
+        $inputArray['birthDate'] = $birthDate;
     }
-    if(empty($_POST['email'])) {
-    	$emailErr = "Email required.";
-        $inputArray['email'] = "";
+    if(empty($_POST['emailAddress'])) {
+    	$emailAddressErr = "Email address required.";
+        $inputArray['emailAddress'] = "";
 
     } else {
-    	$email = removeMaliciousCode($_POST['email']);
-    	$email = verifyEmail($email);
-        $inputArray['email'] = $email;
+    	$emailAddress = removeMaliciousCode($_POST['emailAddress']);
+    	$emailAddress = verifyEmail($emailAddress);
+        $inputArray['emailAddress'] = $emailAddress;
 
-    	if(empty($email)) {
-    		$emailErr = "Invalid email address.";
+    	if(empty($emailAddress)) {
+    		$emailAddressErr = "Invalid Email Address.";
     	}
     }
     if(empty($_POST['password'])) {
@@ -73,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     	$password = removeMaliciousCode($_POST['password']);
     	$passwordHash = hashUserPassword($password);
         $inputArray['password'] = $password;
-        $inputArray['passwordhash'] = $passwordHash;
+        $inputArray['passwordHash'] = $passwordHash;
     	if(empty($password)) {
     		$passwordErr = "Password must be between 8 and 32 characters.";
     	}
@@ -84,33 +85,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         } else {
             //Connect to blog_db
             //Schema
-            //Users (ID, FirstName, LastName, Birthdate, Email, Password)
+            //Users (ID, First Name, Last Name, Birth Date, emailAddress, PasswordHash)
             $mysql = connectBlog();
             $bool = true;
-            $query = mysqli_query($mysql, "SELECT * FROM Users");
+            $query = mysqli_query($mysql, "SELECT * FROM user_login"); //query the users table
 
             while($row = mysqli_fetch_array($query)) {
-                $usersEmail = $row['email'];
+                $tablesEmailAddress = $row['email_address'];
 
-                if($email == $usersEmail) {
+                if($tablesEmailAddress == $emailAddress) {
                     $bool = false;
-                    print '<script>alert("Email has been taken.");</script>';
+                    print '<script>alert("emailAddress has been taken.");</script>';
                     print '<script>window.location.assign("register.php");</script>';
                 }
             }
 
             if($bool) {
-                mysqli_query($mysql, "INSERT INTO Users (FirstName, LastName, Birthdate, Email, Password) VALUES ('$fName', '$lName', '$bDate', '$email', '$password')");
+                mysqli_query($mysql, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('$firstName', '$lastName', '$birthDate')");
+                mysqli_query($mysql, "INSERT INTO user_login (email_address, password_hash) VALUES ('$emailAddress', '$passwordHash')");
                 Print '<script>alert("Registration Complete!");</script>';
-                Print '<script>window.location.assign("register.php");</script>';
+                Print '<script>window.location.assign("index.php");</script>';
             }
-            
-            //Connect to DB
-            //Check if email exists
-            //Save to DB
-            //Redirect to login
-            header("location:login.php");
-
         }   
     }
 }	
@@ -119,15 +114,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <h2>Enter your information</h2><br>
 <p><span class="error">* required field.</span></p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    First Name: <input type="text" name="fName" value="<?php echo $fName;?>">
-    <span class="error">* <?php echo $fNameErr;?></span><br><br>
-    Last Name: <input type="text" name="lName" value="<?php echo $lName;?>">
-    <span class="error">* <?php echo $lNameErr;?></span><br><br>
-    Birth Date: <input type="date" name="birthDate" value="<?php echo $bDate ?>"> mm/dd/yyyy
+    First Name: <input type="text" name="firstName" value="<?php echo $firstName ;?>">
+    <span class="error">* <?php echo $firstNameErr;?></span><br><br>
+    Last Name: <input type="text" name="lastName" value="<?php echo $lastName;?>">
+    <span class="error">* <?php echo $lastNameErr;?></span><br><br>
+    Birth Date: <input type="date" name="birthDate" value="<?php echo $tempDate1 ?>"> mm/dd/yyyy
     <span class="error">* <?php echo $birthDateErr;?></span><br><br>
-    Email: <input type="text" name="email" value="<?php echo $email;?>">
-    <span class="error">* <?php echo $emailErr;?></span><br><br>
-    Password: <input type="text" name="password">
+    Email: <input type="text" name="emailAddress" value="<?php echo $emailAddress;?>">
+    <span class="error">* <?php echo $emailAddressErr;?></span><br><br>
+    Password: <input type="password" name="password">
     <span class="error">* <?php echo $passwordErr;?></span>
    
     <input type="submit" name="submit" value="Submit">
