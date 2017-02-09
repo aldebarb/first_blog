@@ -85,7 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         } else {
             //Connect to blog_db
             //Schema
-            //Users (ID, First Name, Last Name, Birth Date, emailAddress, PasswordHash)
+            //users (user_id, first_name, last_name, birth_date)
+            //user_login(login_id, user_id, email_address, password_hash)
             $mysql = connectBlog();
             $bool = true;
             $query = mysqli_query($mysql, "SELECT * FROM user_login"); //query the users table
@@ -95,19 +96,33 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 if($tablesEmailAddress == $emailAddress) {
                     $bool = false;
-                    print '<script>alert("emailAddress has been taken.");</script>';
+                    print '<script>alert("Email Address has been taken.");</script>';
                     print '<script>window.location.assign("register.php");</script>';
                 }
             }
 
             if($bool) {
                 mysqli_query($mysql, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('$firstName', '$lastName', '$birthDate')");
-                mysqli_query($mysql, "INSERT INTO user_login (email_address, password_hash) VALUES ('$emailAddress', '$passwordHash')");
+                $user_id = mysqli_insert_id($mysql);
+                mysqli_query($mysql, "INSERT INTO user_login (user_id, email_address, password_hash) VALUES ( '$user_id', '$emailAddress', '$passwordHash')");
                 Print '<script>alert("Registration Complete!");</script>';
                 Print '<script>window.location.assign("index.php");</script>';
             }
         }   
     }
+   /* //Test insert
+    if(isset($_POST['test'])) {
+        $mysqlTest = connectBlog();
+        $queryTest1 = mysqli_query($mysqlTest, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('firstTest', 'lastTest', '2001/01/01')");
+        $user_id = mysqli_insert_id($mysqlTest);
+        $queryTest2 = mysqli_query($mysqlTest, "INSERT INTO user_login (user_id, email_address, password_hash) VALUES ('$user_id', 'emailTest@yahoo.com', 'passwordTest')");
+        if($queryTest1) {
+            echo "Query1 Passed";
+        }
+        if($queryTest2) {
+            echo "Query2 Passed";        
+        }
+    }*/
 }	
 ?>
 
@@ -126,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <span class="error">* <?php echo $passwordErr;?></span>
    
     <input type="submit" name="submit" value="Submit">
+   <!-- <input type="submit" name="test" value="test"> -->
 </form>
 
 </body>

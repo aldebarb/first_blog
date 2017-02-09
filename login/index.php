@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     	$mysql = connectBlog();
     	$query = mysqli_query($mysql, "SELECT * FROM user_login");
     	while($row = mysqli_fetch_array($query)) {
-            $tablesEmailAddress = $row['emailAddress_address'];
+            $tablesEmailAddress = $row['email_address'];
             $tablesPassword = $row['password_hash'];
 
     		if(($tablesEmailAddress == $emailAddress) &&($tablesPassword == $passwordHash)) {
