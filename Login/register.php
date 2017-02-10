@@ -17,11 +17,12 @@ $firstName  = $lastName = $birthDate = $emailAddress = $password = $tempDate1 = 
 $firstNameErr = $lastNameErr = $birthDateErr = $emailAddressErr = $passwordErr = "";
 $inputArray = array();
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if (isset($_POST['submit'])) {
     
     if(empty($_POST['firstName'])) {
         $firstNameErr = "First name is required.";
         $inputArray['firstName'] = "";
+
     } else {
         $firstName  = removeMaliciousCode($_POST['firstName']);
     	//Check for letters and limit length
@@ -35,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if(empty($_POST['lastName'])) {
     	$lastNameErr = "Last name is required.";
         $inputArray['lastName'] = "";
+
     } else {
     	$lastName = removeMaliciousCode($_POST['lastName']);
     	$lastName = checkStringLength($lastName, 32);
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if(empty($_POST['birthDate'])) {
         $birthDateErr = "Birth date required.";
         $inputArray['birthDate'] = "";
+
     } else {
         $tempDate1 = removeMaliciousCode($_POST['birthDate']);
         $tempDate2 = strtotime($tempDate1);
@@ -70,46 +73,51 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if(empty($_POST['password'])) {
     	$passwordErr = 'Password required.';
         $inputArray['password'] = "";
+
     } else {
     	$password = removeMaliciousCode($_POST['password']);
     	$passwordHash = hashUserPassword($password);
         $inputArray['password'] = $password;
         $inputArray['passwordHash'] = $passwordHash;
+
     	if(empty($password)) {
     		$passwordErr = "Password must be between 8 and 32 characters.";
     	}
     }
-    if(isset($_POST['submit'])) {
-        if(in_array("", $inputArray) || empty($inputArray)) {
-            echo "Please fill in the entire form!";
-        } else {
-            //Connect to blog_db
-            //Schema
-            //users (user_id, first_name, last_name, birth_date)
-            //user_login(login_id, user_id, email_address, password_hash)
-            $mysql = connectBlog();
-            $bool = true;
-            $query = mysqli_query($mysql, "SELECT * FROM user_login"); //query the users table
+    if(in_array("", $inputArray) || empty($inputArray)) {
+        echo "Please fill in the entire form!";
 
-            while($row = mysqli_fetch_array($query)) {
-                $tablesEmailAddress = $row['email_address'];
+    } else {
+        //Connect to blog_db
+        //Schema
+        //users (user_id, first_name, last_name, birth_date)
+        //user_login(login_id, user_id, email_address, password_hash)
+        $mysql = connectBlog();
+        $bool = true;
+        $query = mysqli_query($mysql, "SELECT * FROM user_login");
 
-                if($tablesEmailAddress == $emailAddress) {
-                    $bool = false;
-                    print '<script>alert("Email Address has been taken.");</script>';
-                    print '<script>window.location.assign("register.php");</script>';
-                }
+        while($row = mysqli_fetch_array($query)) {
+            $tablesEmailAddress = $row['email_address'];
+
+            if($tablesEmailAddress == $emailAddress) {
+                $bool = false;
+                print '<script>alert("Email Address has been taken.");</script>';
+                print '<script>window.location.assign("register.php");</script>';
             }
+        }
 
-            if($bool) {
-                mysqli_query($mysql, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('$firstName', '$lastName', '$birthDate')");
-                $user_id = mysqli_insert_id($mysql);
-                mysqli_query($mysql, "INSERT INTO user_login (user_id, email_address, password_hash) VALUES ( '$user_id', '$emailAddress', '$passwordHash')");
-                Print '<script>alert("Registration Complete!");</script>';
-                Print '<script>window.location.assign("index.php");</script>';
-            }
-        }   
-    }
+        if($bool) {
+
+            mysqli_query($mysql, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('$firstName', '$lastName', '$birthDate')");
+            //Retrieve the last inserted id.
+            $user_id = mysqli_insert_id($mysql);
+            //Insert into the user_login table. Is this a problem with multiple registrations at the same time? Is there a better way?
+            mysqli_query($mysql, "INSERT INTO user_login (user_id, email_address, password_hash) VALUES ( '$user_id', '$emailAddress', '$passwordHash')");
+            Print '<script>alert("Registration Complete!");</script>';
+            Print '<script>window.location.assign("index.php");</script>';
+        }
+    }   
+}
    /* //Test insert
     if(isset($_POST['test'])) {
         $mysqlTest = connectBlog();
@@ -122,8 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         if($queryTest2) {
             echo "Query2 Passed";        
         }
-    }*/
-}	
+    }*/	
 ?>
 
 <h2>Enter your information</h2><br>
