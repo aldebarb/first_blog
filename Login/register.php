@@ -3,6 +3,15 @@
 <html>
 <head>
 	<title>Register</title>
+<!--
+//Remove malicious code
+//Check if form is complete
+//Connect to blog_db
+//Schema
+//users (user_id, first_name, last_name, birth_date)
+//user_login(login_id, user_id, email_address, password_hash)
+//Insert and redirect
+-->
 <?php 
 require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
@@ -46,7 +55,7 @@ if (isset($_POST['submit'])) {
         	$lastNameErr = "Letters only.";
         }
     }
-    //Need to add date limits
+    //Add upper and lower limits to date.
     if(empty($_POST['birthDate'])) {
         $birthDateErr = "Birth date required.";
         $inputArray['birthDate'] = "";
@@ -88,15 +97,11 @@ if (isset($_POST['submit'])) {
         echo "Please fill in the entire form!";
 
     } else {
-        //Connect to blog_db
-        //Schema
-        //users (user_id, first_name, last_name, birth_date)
-        //user_login(login_id, user_id, email_address, password_hash)
         $mysql = connectBlog();
         $bool = true;
         $query = mysqli_query($mysql, "SELECT * FROM user_login");
 
-        while($row = mysqli_fetch_array($query)) {
+        while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
             $tablesEmailAddress = $row['email_address'];
 
             if($tablesEmailAddress == $emailAddress) {
@@ -107,7 +112,6 @@ if (isset($_POST['submit'])) {
         }
 
         if($bool) {
-
             mysqli_query($mysql, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('$firstName', '$lastName', '$birthDate')");
             //Retrieve the last inserted id.
             $user_id = mysqli_insert_id($mysql);
@@ -118,19 +122,6 @@ if (isset($_POST['submit'])) {
         }
     }   
 }
-   /* //Test insert
-    if(isset($_POST['test'])) {
-        $mysqlTest = connectBlog();
-        $queryTest1 = mysqli_query($mysqlTest, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('firstTest', 'lastTest', '2001/01/01')");
-        $user_id = mysqli_insert_id($mysqlTest);
-        $queryTest2 = mysqli_query($mysqlTest, "INSERT INTO user_login (user_id, email_address, password_hash) VALUES ('$user_id', 'emailTest@yahoo.com', 'passwordTest')");
-        if($queryTest1) {
-            echo "Query1 Passed";
-        }
-        if($queryTest2) {
-            echo "Query2 Passed";        
-        }
-    }*/	
 ?>
 
 <h2>Enter your information</h2><br>
@@ -146,9 +137,7 @@ if (isset($_POST['submit'])) {
     <span class="error">* <?php echo $emailAddressErr;?></span><br><br>
     Password: <input type="password" name="password">
     <span class="error">* <?php echo $passwordErr;?></span>
-   
     <input type="submit" name="submit" value="Submit">
-   <!-- <input type="submit" name="test" value="test"> -->
 </form>
 
 </body>
