@@ -9,15 +9,16 @@
 //check if password exists
 //redirect to the blog page
 -->
-
+<?php
+require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
+?>
 </head>
 <body>
 <?php
 session_start();
-require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
-$emailAddress = $password = $mysql = $query = "";
-$tablesEmailAddress = $tablesPasswordHash = $verifyPassword = "";
+$emailAddress = $password = $mysql = $query = $query_id = "";
+$tablesEmailAddress = $tablesPasswordHash = $tablesUserId = $verifyPassword = "";
 
 if(isset($_POST['submit'])) {
     $emailAddress = removeMaliciousCode($_POST['emailAddress']);
@@ -29,10 +30,12 @@ if(isset($_POST['submit'])) {
     while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
         $tablesEmailAddress = $row['email_address'];
         $tablesPasswordHash = $row['password_hash'];
+        $tablesUserId = $row['user_id'];
         $verifyPassword = password_verify($password, $tablesPasswordHash);
 
 		if(($tablesEmailAddress == $emailAddress) && ($verifyPassword == true)) {
 		    $_SESSION['emailAddress'] = $emailAddress;
+            $_SESSION['userId'] = $tablesUserId;
 		    header("location: ../Home/index.php");
 		    
 		} else {
@@ -41,8 +44,8 @@ if(isset($_POST['submit'])) {
         }
     }
 }
-
 ?>
+
 <h2>Weclome to Char120 the personal blog!</h2>
 <p>Here you can share your own blog and comment on others.</p>
 

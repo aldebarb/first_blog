@@ -12,10 +12,13 @@
     //user_login(login_id, user_id, email_address, password_hash)
 //
 -->
-
+<?php 
+require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
+?>
 </head>
 <body>
-<table border="1px" width="100%">
+<table border="1px" width="75%">
   <tr>
     <th>User</th>
     <th>Post Time</th>
@@ -23,12 +26,15 @@
   </tr>
 <?php
 session_start();
+$userId = $blogPost = $time = $date = "";
 if(!$_SESSION['emailAddress']) {
 	header("location: ../Login/index.php");
 
 } else {
+    //echo "Congrats you are logged in as " . $_SESSION['emailAddress'] . " and your id# is " . $_SESSION['userId'];
 	$mysql = connect_blog();
 	$query = mysqli_query($mysql, "SELECT user_login.email_address, forum.post_date, forum.post_time, forum.blog_post FROM forum JOIN user_login ON forum.user_id = user_login.user_id");
+
 	while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
         print "<tr>";
         print '<td align="left">' . $row['email_address'] . "</td>";
@@ -39,15 +45,25 @@ if(!$_SESSION['emailAddress']) {
     print "</table>";
 
     if(isset($_POST['submit'])) {
-    	$blogPost = removeMaliciousCode
-        
+        $userId = $_SESSION['userId'];
+    	$blogPost = removeMaliciousCode($_POST['blog_post']);
+        $blogPost = checkStringLength($blogPost);
+        $time = strftime("%X");
+        $date = strftime("%B %d, %Y");
+
+        if(empty($blogPost)) {
+            echo "Not a valid post!";
+
+        } else {
+            mysqli_query($mysql, "INSERT INTO forum (user_id, blog_post, post_date, post_time) VALUES ('$userId', '$blogPost', '$date', '$time')");
+        }
     }
 }
 ?>
 
 <form>
 	<h2>Make a post?</h2>
-	<textarea name="blog_post" rows="3" cols="40"></textarea>
+	<textarea name="blog_post" rows="3" cols="40" maxlength="120"></textarea>
 	<input type="submit" name="submit" value="Post">
 </form>
 </body>
