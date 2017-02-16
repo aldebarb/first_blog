@@ -1,3 +1,8 @@
+<?php
+session_start();
+require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,14 +14,9 @@
 //check if password exists
 //redirect to the blog page
 -->
-<?php
-require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
-?>
 </head>
 <body>
 <?php
-session_start();
 $emailAddress = $password = $mysql = $query = $query_id = "";
 $tablesEmailAddress = $tablesPasswordHash = $tablesUserId = $verifyPassword = "";
 

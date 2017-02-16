@@ -1,4 +1,7 @@
-
+<?php 
+require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,10 +15,6 @@
 //user_login(login_id, user_id, email_address, password_hash)
 //Insert and redirect
 -->
-<?php 
-require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
-?>
 <style>
 	.error {color: #FF0000;}
 </style>
