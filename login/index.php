@@ -47,7 +47,7 @@ if(isset($_POST['submit'])) {
 ?>
 
 <h2>Weclome to Char120 the personal blog!</h2>
-<p>Here you can share your own blog and comment on others.</p>
+<p>Here you can share your own blog posts!</p>
 
 <form method="post" action="">
 	<label>Enter your login information.</label><br>

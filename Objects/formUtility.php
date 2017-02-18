@@ -5,7 +5,6 @@ function removeMaliciousCode($data)
     $data = implode("", explode("\\", $data));
 	$date = trim($data);
 	$data = stripslashes($data);
-	$data = htmlspecialchars($data);
 	return $data;
 }
 function checkStringLength($userString, $stringLength)
