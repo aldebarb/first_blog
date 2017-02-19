@@ -22,6 +22,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 <form method="get" action="add.php">
 <h2>Make a new post?</h2>
 <input type="submit" name="addPost" value="Add Post">
+<a href="../Login/logout.php">Click here to logout.</a>
 </form>    
 <?php
 
@@ -33,16 +34,22 @@ if(!$_SESSION['emailAddress']) {
 } else {
     //echo "Congrats you are logged in as " . $_SESSION['emailAddress'] . " and your id# is " . $_SESSION['userId'];
 	$mysql = connectBlog();
-	$query = mysqli_query($mysql, "SELECT forum.post_title, user_login.email_address, forum.post_date, forum.post_time, forum.post_blog FROM forum JOIN user_login ON forum.user_id = user_login.user_id ORDER BY forum.post_id DESC");
+	$query = mysqli_query($mysql, "SELECT forum.post_title, user_login.email_address, forum.post_date, forum.post_time, forum.post_blog, forum.post_id FROM forum JOIN user_login ON forum.user_id = user_login.user_id ORDER BY forum.post_id DESC");
 
 	while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
-        echo '<div>';
-            echo '<h1>'. $row['post_title'] . '</h1>';
-            echo '<p>' . $row['post_blog'] . '</p>';
-            echo '<p>Posted on ' . $row['post_date'] . " - " . $row['post_time'] . '</p>';
-            echo '<p>Posted by: ' . $row['email_address'] . '</p>';
-        echo '</div>';
+        print '<div>';
+            print '<h1>'. $row['post_title'] . '</h1>';
+            print '<p>' . $row['post_blog'] . '</p>';
+            print '<p>Posted on ' . $row['post_date'] . " - " . $row['post_time'] . '</p>';
+            print '<p>Posted by: ' . $row['email_address'] . '</p>';
+        print '</div>';
+      
+        print '<form method="post" action="delete.php?postId=' . $row['post_id'] . '">';
+        print '<input type="submit" name="delete" value="Delete">';
+        print '<a href="edit.php?postId=' . $row['post_id'] . '">Edit Post?</a>';
+        print '</form>';
 	}
+    
 }
 ?>
 </body>
