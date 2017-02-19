@@ -27,8 +27,12 @@ if(!$_SESSION['emailAddress']) {
             echo "Not a valid post!";
 
         } else {
-            mysqli_query($mysql, "UPDATE forum SET user_id = $userId, post_title = $postTitle, post_blog = $postBlog, post_date = $date, post_time = $time WHERE post_id = $postId");
+            $queryMe = mysqli_query($mysql, "UPDATE forum SET user_id = '$userId', post_title = '$postTitle', post_blog = '$postBlog', post_date = '$date', post_time = '$time' WHERE post_id = '$postId'");
+            if($queryMe) {
             header("location: ../Home/index.php");
+            } else {
+                echo "Not Entered";
+            }
         }
     }
 }
