@@ -7,6 +7,7 @@ function removeMaliciousCode($data)
 	$data = stripslashes($data);
 	return $data;
 }
+
 function checkStringLength($userString, $stringLength)
 {
 	if (empty($userString)) {
@@ -20,21 +21,7 @@ function checkStringLength($userString, $stringLength)
 	}
 	return $userString;
 }
-/****Rivsit this****
-function validateUserInt($userInt, $intMin, $intMax)
-{
-	if (empty($userInt)) {
-		return $userInt = "";
-	}
-	if ($userInt < $intMin || $userInt > $intMax) {
-	    return $userInt = "";
-	}
-	if (!filter_var($userInt, FILTER_VALIDATE_INT)) {
-		return $userInt = "";
-	}
-	return $userInt;
-}
-*/
+
 function verifyEmail($userEmail) 
 {
     if (empty($userEmail)) {

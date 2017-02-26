@@ -4,19 +4,20 @@ session_start();
 require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 
-if(!$_SESSION['emailAddress']) {
+if (!$_SESSION['emailAddress']) {
     header("location: ../Login/index.php");
 
 } else {
     
-    if(isset($_POST['submit'])) {
+    if (isset($_POST['submit'])) {
+        //$_SESSION['userId'] set during login.
         $userId = $_SESSION['userId'];
         $postTitle = removeMaliciousCode($_POST['postTitle']);
     	$postBlog = removeMaliciousCode($_POST['postBlog']);
         $time = strftime("%X");
         $date = strftime("%B %d, %Y");
 
-        if((empty($postBlog)) || (empty($postTitle))) {
+        if ((empty($postBlog)) || (empty($postTitle))) {
             echo "Not a valid post!";
 
         } else {

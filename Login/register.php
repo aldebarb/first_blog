@@ -2,6 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,11 +16,12 @@ require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 //user_login(login_id, user_id, email_address, password_hash)
 //Insert and redirect
 -->
-<style>
-	.error {color: #FF0000;}
-</style>
+    <style>
+	    .error {color: #FF0000;}
+    </style>
 </head>
 <body>
+
 <?php
 $firstName  = $lastName = $birthDate = $emailAddress = $password = $tempDate1 = $tempDate2 = "";
 $firstNameErr = $lastNameErr = $birthDateErr = $emailAddressErr = $passwordErr = "";
@@ -27,21 +29,22 @@ $inputArray = array();
 
 if (isset($_POST['submit'])) {
     
-    if(empty($_POST['firstName'])) {
+    if (empty($_POST['firstName'])) {
         $firstNameErr = "First name is required.";
         $inputArray['firstName'] = "";
 
     } else {
-        $firstName  = removeMaliciousCode($_POST['firstName']);
+        $firstName = removeMaliciousCode($_POST['firstName']);
     	//Check for letters and limit length
-    	$firstName  = checkStringLength($firstName , 32);
-        $inputArray['firstName'] = $firstName ;
+    	$firstName = checkStringLength($firstName , 32);
+        $inputArray['firstName'] = $firstName;
 
-    	if(empty($firstName )) {
+    	if (empty($firstName)) {
     		$firstNameErr = "Letters only.";
     	}
     }
-    if(empty($_POST['lastName'])) {
+
+    if (empty($_POST['lastName'])) {
     	$lastNameErr = "Last name is required.";
         $inputArray['lastName'] = "";
 
@@ -50,12 +53,13 @@ if (isset($_POST['submit'])) {
     	$lastName = checkStringLength($lastName, 32);
         $inputArray['lastName'] = $lastName;
 
-        if(empty($lastName)) {
+        if (empty($lastName)) {
         	$lastNameErr = "Letters only.";
         }
     }
+
     //Add upper and lower limits to date.
-    if(empty($_POST['birthDate'])) {
+    if (empty($_POST['birthDate'])) {
         $birthDateErr = "Birth date required.";
         $inputArray['birthDate'] = "";
 
@@ -65,7 +69,8 @@ if (isset($_POST['submit'])) {
         $birthDate = date('Y/m/d', $tempDate2);
         $inputArray['birthDate'] = $birthDate;
     }
-    if(empty($_POST['emailAddress'])) {
+
+    if (empty($_POST['emailAddress'])) {
     	$emailAddressErr = "Email address required.";
         $inputArray['emailAddress'] = "";
 
@@ -74,11 +79,12 @@ if (isset($_POST['submit'])) {
     	$emailAddress = verifyEmail($emailAddress);
         $inputArray['emailAddress'] = $emailAddress;
 
-    	if(empty($emailAddress)) {
+    	if (empty($emailAddress)) {
     		$emailAddressErr = "Invalid Email Address.";
     	}
     }
-    if(empty($_POST['password'])) {
+
+    if (empty($_POST['password'])) {
     	$passwordErr = 'Password required.';
         $inputArray['password'] = "";
 
@@ -88,11 +94,12 @@ if (isset($_POST['submit'])) {
         $inputArray['password'] = $password;
         $inputArray['passwordHash'] = $passwordHash;
 
-    	if(empty($password)) {
+    	if (empty($password)) {
     		$passwordErr = "Password must be between 8 and 32 characters.";
     	}
     }
-    if(in_array("", $inputArray) || empty($inputArray)) {
+
+    if (in_array("", $inputArray) || empty($inputArray)) {
         echo "Please fill in the entire form!";
 
     } else {
@@ -100,17 +107,17 @@ if (isset($_POST['submit'])) {
         $bool = true;
         $query = mysqli_query($mysql, "SELECT * FROM user_login");
 
-        while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
+        while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
             $tablesEmailAddress = $row['email_address'];
 
-            if($tablesEmailAddress == $emailAddress) {
+            if ($tablesEmailAddress == $emailAddress) {
                 $bool = false;
                 print '<script>alert("Email Address has been taken.");</script>';
                 print '<script>window.location.assign("register.php");</script>';
             }
         }
 
-        if($bool) {
+        if ($bool) {
             mysqli_query($mysql, "INSERT INTO users (first_name, last_name, birth_date) VALUES ('$firstName', '$lastName', '$birthDate')");
             //Retrieve the last inserted id.
             $user_id = mysqli_insert_id($mysql);
@@ -125,6 +132,7 @@ if (isset($_POST['submit'])) {
 
 <h2>Enter your information</h2><br>
 <p><span class="error">* required field.</span></p>
+
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     First Name: <input type="text" name="firstName" value="<?php echo $firstName ;?>">
     <span class="error">* <?php echo $firstNameErr;?></span><br><br>

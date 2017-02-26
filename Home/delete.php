@@ -2,7 +2,7 @@
 session_start();
 require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 
-if(!$_SESSION['emailAddress']) {
+if (!$_SESSION['emailAddress']) {
 	header("location: ../Login/index.php");
 
 } else {

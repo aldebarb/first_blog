@@ -3,6 +3,7 @@ session_start();
 require $_SERVER['DOCUMENT_ROOT'] . '/GithubProjects/first_blog/Objects/formUtility.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,24 +17,25 @@ require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 -->
 </head>
 <body>
+
 <?php
 $emailAddress = $password = $mysql = $query = $query_id = "";
 $tablesEmailAddress = $tablesPasswordHash = $tablesUserId = $verifyPassword = "";
 
-if(isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {
     $emailAddress = removeMaliciousCode($_POST['emailAddress']);
     $password = removeMaliciousCode($_POST['password']);
     $passwordHash = hashUserPassword($password);
     $mysql = connectBlog();
     $query = mysqli_query($mysql, "SELECT * FROM user_login WHERE email_address = '$emailAddress'");
     	
-    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
+    while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
         $tablesEmailAddress = $row['email_address'];
         $tablesPasswordHash = $row['password_hash'];
         $tablesUserId = $row['user_id'];
         $verifyPassword = password_verify($password, $tablesPasswordHash);
 
-		if(($tablesEmailAddress == $emailAddress) && ($verifyPassword == true)) {
+		if (($tablesEmailAddress == $emailAddress) && ($verifyPassword == true)) {
 		    $_SESSION['emailAddress'] = $emailAddress;
             $_SESSION['userId'] = $tablesUserId;
 		    header("location: ../Home/index.php");
@@ -57,7 +59,7 @@ if(isset($_POST['submit'])) {
 </form><br>
 
 <p>Don't have an account? <a href="register.php">Click here and join today!</a></p>
-<p>Check out the blog. <a href="/Home/index.php">Visit as a guest.</a>
+<p>Check out the blog. <a href="/Home/index.php">Visit as a guest.</a></p>
 
 </body>
 </html>
