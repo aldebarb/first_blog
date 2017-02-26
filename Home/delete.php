@@ -10,6 +10,5 @@ if(!$_SESSION['emailAddress']) {
 	$postId = $_GET['postId'];
 	mysqli_query($mysql, "DELETE FROM forum WHERE post_id = '$postId'");
 	header("location: index.php");
-
 }
 ?>

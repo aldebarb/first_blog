@@ -12,7 +12,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/GitHubProjects/first_blog/User/index.php';
 //SELECT forum table + Display forum
     //Schema
     //forum (post_id, user_id, post_title, post_blog, post_date, post_time)
-    //comment(comment_id, post_id, user_id, comment, comment_date, comment_time)
     //users (user_id, first_name, last_name, birth_date)
     //user_login(login_id, user_id, email_address, password_hash)
 //
